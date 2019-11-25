@@ -1,0 +1,109 @@
+﻿CREATE PROCEDURE [dbo].[UPSERT_CONTACT]
+AS
+BEGIN
+	-- TO DO: update CONTACT from [stage].[UPDATE_CONTACT]
+	;WITH UPDATE_CONTACT AS (
+		SELECT
+			u.srcCONTACT_KEY	[SOURCE_KEY]
+		,	u.cmpCONTACT_SK		[CONTACT_SK]
+		,	c.[EMAIL_ADDRESS]
+		,	c.[NAME_PREFIX]
+		,	c.[FIRST_NAME]
+		,	c.[MIDDLE_NAME]
+		,	c.[LAST_NAME]
+		,	c.[NAME_SUFFIX]
+		,	c.[ADDRESS_LINE1]
+		,	c.[ADDRESS_LINE2]
+		,	c.[SUITE]
+		,	c.[CITY]
+		,	c.[STATE]
+		,	c.[POSTAL_CODE]
+		,	c.[PLUS4]
+		,	c.[LATITUDE]
+		,	c.[LONGITUDE]
+		,	c.[PHONE_NUMBER]
+		FROM [stage].[UPDATE_CONTACT] u
+		JOIN [stage].[FULL_CONTACT] c
+		ON c.CONTACT_KEY = u.srcCONTACT_KEY
+		WHERE u.mdMatchPercentage = N'100'
+	)
+
+	UPDATE c
+	SET
+		[SOURCE_KEY] = u.[SOURCE_KEY]
+    ,	[NAME_PREFIX] = u.[NAME_PREFIX]
+    ,	[MIDDLE_NAME] = u.[MIDDLE_NAME]
+    ,	[NAME_SUFFIX] = u.[NAME_SUFFIX]
+    ,	[ADDRESS_LINE1] = u.[ADDRESS_LINE1]
+    ,	[ADDRESS_LINE2] = u.[ADDRESS_LINE2]
+    ,	[SUITE] = u.[SUITE]
+    ,	[CITY] = u.[CITY]
+    ,	[STATE] = u.[STATE]
+    ,	[POSTAL_CODE] = u.[POSTAL_CODE]
+    ,	[PLUS4] = u.[PLUS4]
+    ,	[LATITUDE] = u.[LATITUDE]
+    ,	[LONGITUDE] = u.[LONGITUDE]
+    ,	[PHONE_NUMBER] = u.[PHONE_NUMBER]
+	FROM [dbo].[CONTACT] c
+	JOIN [UPDATE_CONTACT] u
+		ON u.[CONTACT_SK] = c.[CONTACT_SK];
+
+	--
+	-- INSERT new CONTACTs from [stage].[NEW_CONTACT]
+	--
+	-- Get the srcCONTACT_KEY values from the [stage].[NEW_CONTACT] table
+	-- that are NOT in the [stage].[UPDATE_CONTACT] table
+	--
+	;WITH NEW_CONTACT AS (
+		SELECT
+			DISTINCT srcCONTACT_KEY	[CONTACT_KEY]
+		FROM  [stage].[NEW_CONTACT] 
+
+		EXCEPT
+
+		SELECT
+			srcCONTACT_KEY
+		FROM [stage].[UPDATE_CONTACT]
+	)
+	INSERT INTO [dbo].[CONTACT] (
+		[SOURCE_KEY]
+	,	[EMAIL_ADDRESS]
+	,	[NAME_PREFIX]
+	,	[FIRST_NAME]
+	,	[MIDDLE_NAME]
+	,	[LAST_NAME]
+	,	[NAME_SUFFIX]
+	,	[ADDRESS_LINE1]
+	,	[ADDRESS_LINE2]
+	,	[SUITE]
+	,	[CITY]
+	,	[STATE]
+	,	[POSTAL_CODE]
+	,	[PLUS4]
+	,	[LATITUDE]
+	,	[LONGITUDE]
+	,	[PHONE_NUMBER]
+	)
+
+	SELECT
+		c.CONTACT_KEY
+	,	c.EMAIL_ADDRESS
+	,	c.NAME_PREFIX
+	,	c.FIRST_NAME
+	,	c.MIDDLE_NAME
+	,	c.LAST_NAME
+	,	c.NAME_SUFFIX
+	,	c.ADDRESS_LINE1
+	,	c.ADDRESS_LINE2
+	,	c.SUITE
+	,	c.CITY
+	,	c.[STATE]
+	,	c.POSTAL_CODE
+	,	c.PLUS4
+	,	c.LATITUDE
+	,	c.LONGITUDE
+	,	c.PHONE_NUMBER
+	FROM NEW_CONTACT n
+	JOIN [stage].[FULL_CONTACT] c
+	ON c.CONTACT_KEY = n.CONTACT_KEY
+END

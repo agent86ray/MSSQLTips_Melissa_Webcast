@@ -1,0 +1,363 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="10/17/2019 10:09:34 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="DESKTOP-U8PAEJC"
+  DTS:CreatorName="DESKTOP-U8PAEJC\RaymondBarley"
+  DTS:DTSID="{C37082BE-1BCC-4EFB-8AE4-DF7CF3C2A3F5}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.0900.40"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="MASTER_CONTACT_PROCESSING"
+  DTS:PackageType="5"
+  DTS:VersionBuild="41"
+  DTS:VersionGUID="{0EDF8309-9B60-4A8C-9FFA-4999E269A0DD}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:PackageParameters>
+    <DTS:PackageParameter
+      DTS:CreationName=""
+      DTS:DataType="8"
+      DTS:DTSID="{3A97A49F-7937-4FD0-86B8-EC588B78055D}"
+      DTS:ObjectName="PARAM_IMPORT_FILE_FOLDER">
+      <DTS:Property
+        DTS:DataType="8"
+        DTS:Name="ParameterValue">C:\repos\MELISSA_TEST\IMPORT</DTS:Property>
+    </DTS:PackageParameter>
+  </DTS:PackageParameters>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\CHECK FOR DUPLICATE CONTACTS"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{DBEB8DE5-C09E-4B53-A73C-C5BD74C210E3}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="CHECK FOR DUPLICATE CONTACTS"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>CHECK_FOR_DUPLICATE_CONTACTS.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\CLEAN, VALIDATE AND ENHANCE"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{2694AF20-675F-4AA6-8A0E-4EB9B38DB6F1}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="CLEAN, VALIDATE AND ENHANCE"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>STAGE_CONTACT.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\IMPORT CONTACT CSV"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{18B53CFF-09A5-434B-95BB-6D372EC2C083}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="IMPORT CONTACT CSV"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>IMPORT_CONTACT_CSV.dtsx</PackageName>
+          <ParameterAssignment>
+            <ParameterName>IMPORT_FILE_FOLDER</ParameterName>
+            <BindedVariableOrParameterName>$Package::PARAM_IMPORT_FILE_FOLDER</BindedVariableOrParameterName>
+          </ParameterAssignment>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\UPDATE CONTACT DIMENSION"
+      DTS:CreationName="Microsoft.ExecutePackageTask"
+      DTS:Description="Execute Package Task"
+      DTS:DTSID="{0D1AD9E2-5C59-4AE9-9E4B-1C76BB9EDAE3}"
+      DTS:ExecutableType="Microsoft.ExecutePackageTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="UPDATE CONTACT DIMENSION"
+      DTS:TaskContact="Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <ExecutePackageTask>
+          <UseProjectReference>True</UseProjectReference>
+          <PackageName>UPDATE_CONTACT_DIMENSION.dtsx</PackageName>
+        </ExecutePackageTask>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{083CEFD1-8E92-49A0-82DF-0674BBB5586D}"
+      DTS:From="Package\IMPORT CONTACT CSV"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\CLEAN, VALIDATE AND ENHANCE" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{2594C251-EFB0-4A32-80EC-AB4365D9AE90}"
+      DTS:From="Package\CLEAN, VALIDATE AND ENHANCE"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\CHECK FOR DUPLICATE CONTACTS" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{3B5EB5E5-8F34-4343-B040-A57A8CA1EB00}"
+      DTS:From="Package\CHECK FOR DUPLICATE CONTACTS"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\UPDATE CONTACT DIMENSION" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssge="clr-namespace:Microsoft.SqlServer.Graph.Extended;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+        <NodeLayout
+          Size="247.2,41.6"
+          Id="Package\CHECK FOR DUPLICATE CONTACTS"
+          TopLeft="250.857147129215,233.082356210069" />
+        <NodeLayout
+          Size="237.6,41.6"
+          Id="Package\CLEAN, VALIDATE AND ENHANCE"
+          TopLeft="249.142861385735,148.047060899833" />
+        <NodeLayout
+          Size="188.8,41.6"
+          Id="Package\IMPORT CONTACT CSV"
+          TopLeft="273.142861794453,58.7294125883637" />
+        <NodeLayout
+          Size="227.2,41.6"
+          Id="Package\UPDATE CONTACT DIMENSION"
+          TopLeft="265.714290239373,321.176475092614" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="367.742861590094,100.329412588364">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{x:Null}"
+              EndConnector="0,47.7176483114697"
+              Start="0,0"
+              End="0,40.2176483114697">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,40.2176483114697" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="371.200004257475,189.647060899833">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{x:Null}"
+              EndConnector="0,43.4352953102352"
+              Start="0,0"
+              End="0,35.9352953102352">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,35.9352953102352" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="376.885718684294,274.682356210069">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{x:Null}"
+              EndConnector="0,46.4941188825455"
+              Start="0,0"
+              End="0,38.9941188825455">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.9941188825455" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <AnnotationLayout
+          Text="Check for duplicates using Melissa&#xA;Fuzzy Match SSIS component"
+          ParentId="Package"
+          Size="194.4,50.4"
+          Id="ec7f4f0b-adf5-4cc7-897b-99dd643c7f23"
+          TopLeft="22.8571432463976,222.682356064213">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+        <AnnotationLayout
+          Text="Import Contact CSV file from&#xA;designated folder into&#xA;SQL Server table"
+          ParentId="Package"
+          Size="168.8,64"
+          Id="8b54cef6-c4df-477f-a9d2-fef7e9917c67"
+          TopLeft="19.428571759438,55.0588243015911">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+        <AnnotationLayout
+          Text="Cleanse, validate and enhance data &#xA;using Melissa Personator SSIS &#xA;component"
+          ParentId="Package"
+          Size="204.8,64"
+          Id="f646ccee-5310-4fce-8b6a-02cd867a1bc5"
+          TopLeft="18.2857145971181,138.870590182902">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+        <AnnotationLayout
+          Text="Update Contact dimension &#xA;using standard T-SQL DML"
+          ParentId="Package"
+          Size="160,50.4"
+          Id="a7c22c27-f48d-467b-9e93-c49c6ce70e4d"
+          TopLeft="24.5714289898775,318.117651520304">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+        <AnnotationLayout
+          Text="Contact Data Warehouse Dimension Master Package"
+          ParentId="Package"
+          Size="283.2,37.6"
+          Id="335b9969-8d90-4bc4-bb7e-040b5ebd2207"
+          TopLeft="110.285716163869,0">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+        <AnnotationLayout
+          Text="import.CONTACT"
+          ParentId="Package"
+          Size="111.2,37.6"
+          Id="e45671dc-374a-495a-9a4f-fbd23b2a9521"
+          TopLeft="499.428579933789,58.7294125883637">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+        <AnnotationLayout
+          Text="stage.FULL_CONTACT"
+          ParentId="Package"
+          Size="136,37.6"
+          Id="c9983c91-6073-4dcf-95a2-f75667487177"
+          TopLeft="497.71429419031,147.435296185371">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+        <AnnotationLayout
+          Text="stage.NEW_CONTACT&#xA;stage.UPDATE_CONTACT&#xA;stage.NOTSURE_CONTACT"
+          ParentId="Package"
+          Size="160,64"
+          Id="26532cfa-31aa-495d-9dbe-bc0ebc77758a"
+          TopLeft="502.857151420749,222.07059134975">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+        <AnnotationLayout
+          Text="dbo.CONTACT"
+          ParentId="Package"
+          Size="98.4,37.6"
+          Id="0a4ad287-2bee-4145-a55d-081f09efddcc"
+          TopLeft="506.285722907709,316.894122091379">
+          <AnnotationLayout.FontInfo>
+            <mssge:FontInfo
+              Color="#FF1E1E1E">
+              <mssge:FontInfo.TextDecorations>
+                <av:TextDecorationCollection />
+              </mssge:FontInfo.TextDecorations>
+            </mssge:FontInfo>
+          </AnnotationLayout.FontInfo>
+        </AnnotationLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
